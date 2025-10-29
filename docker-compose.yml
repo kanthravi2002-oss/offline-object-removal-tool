@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: object-removal-tool
+    ports:
+      - "5000:5000"
+    environment:
+      - SESSION_SECRET=${SESSION_SECRET:-change-this-secret-in-production}
+      - FLASK_ENV=production
+    volumes:
+      # Mount for persistent uploads (optional)
+      - ./temp_uploads:/app/temp_uploads
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
